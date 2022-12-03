@@ -1752,6 +1752,7 @@ version = "0.1.0"
 dependencies = [
  "directories",
  "flara-utils",
+ "miette",
  "serde",
  "serde_derive",
  "toml",
