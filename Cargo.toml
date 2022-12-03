@@ -31,6 +31,6 @@ opt-level = 'z'
 lto = true
 
 [dependencies]
-bevy = { version = "0.9.1", features = ["dynamic"] }
+bevy = { version = "0.9.1", features = ["dynamic", "wayland"] }
 image = "0.24.5"
 winit = "0.27.5"
