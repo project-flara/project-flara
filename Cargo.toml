@@ -1,9 +1,36 @@
 [package]
-name = "dresslive"
+name = "project-flara"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[workspace]
+members = [
+    "launchers/wasm",
+    "launchers/native",
+]
+
+exclude = [
+    "launchers/ios",
+]
+
+[[bin]]
+name="native-launcher"
+path="launchers/native/src/main.rs"
+
+# Enable high optimizations for dependencies (incl. Bevy), but not for our code:
+[profile.dev.package.project-flara]
+opt-level = 0
+[profile.dev.package."*"]
+opt-level = 3
+
+# Optimizations for WASM
+[profile.release]
+panic = 'abort'
+codegen-units = 1
+opt-level = 'z'
+lto = true
 
 [dependencies]
 bevy = { version = "0.9.1", features = ["dynamic"] }
+image = "0.24.5"
+winit = "0.27.5"
