@@ -21,10 +21,12 @@ fn set_window_icon(windows: NonSend<WinitWindows>) {
     primary.set_window_icon(Some(icon));
 }
 
-fn main() {
+fn main() -> miette::Result<()> {
     let mut app = project_flara::app(false);
 
     info!("Starting launcher: Native");
     app.add_startup_system(set_window_icon);
     app.run();
+
+    Ok(())
 }
