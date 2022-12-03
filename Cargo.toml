@@ -7,6 +7,7 @@ edition = "2021"
 members = [
     "launchers/wasm",
     "launchers/native",
+    "utils"
 ]
 
 exclude = [
