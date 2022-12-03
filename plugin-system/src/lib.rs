@@ -27,7 +27,7 @@ pub enum StartupError {
 }
 
 pub struct StartupErrors {
-    /// 
+    ///
     pub errors: Vec<StartupError>,
     /// Plugins that we have succesfully managed to load
     pub okay_plugins: Vec<Plugin>,
@@ -79,6 +79,9 @@ pub fn startup() -> Result<Vec<Plugin>, StartupErrors> {
     if errors.len() == 0 {
         Ok(plugins)
     } else {
-        Err(StartupErrors { errors, okay_plugins: plugins })
+        Err(StartupErrors {
+            errors,
+            okay_plugins: plugins,
+        })
     }
 }
