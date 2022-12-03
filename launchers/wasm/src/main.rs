@@ -3,7 +3,7 @@ use stylist::yew::styled_component;
 use stylist::{css, global_style};
 use yew::prelude::*;
 
-use project-flara::LAUNCHER_TITLE;
+use project_flara::LAUNCHER_TITLE;
 
 fn set_window_title(title: &str) {
     web_sys::window()
@@ -55,7 +55,7 @@ fn main() {
     // Mount the DOM
     yew::start_app::<Root>();
     // Start the Bevy App
-    let mut app = project-flara::app(false);
+    let mut app = project_flara::app(false);
     info!("Starting launcher: WASM");
     app.run();
 }
