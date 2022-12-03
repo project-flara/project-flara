@@ -7,6 +7,7 @@ edition = "2021"
 members = [
     "launchers/wasm",
     "launchers/native",
+    "plugin-system",
     "utils"
 ]
 
@@ -20,6 +21,8 @@ path="launchers/native/src/main.rs"
 
 # Enable high optimizations for dependencies (incl. Bevy), but not for our code:
 [profile.dev.package.project-flara]
+opt-level = 0
+[profile.dev.package.flara-plugin]
 opt-level = 0
 [profile.dev.package."*"]
 opt-level = 3
