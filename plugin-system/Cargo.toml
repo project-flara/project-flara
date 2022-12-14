@@ -1,0 +1,15 @@
+[package]
+name = "flara-plugin"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+wasmer = { version = "3.0.2", features = ["wasmer-compiler-llvm", "llvm"]}
+directories = "4.0.1"
+toml = "0.5.9"
+serde = "1.0.148"
+serde_derive = "1.0.148"
+flara-utils = { path = "../utils" }
+miette = { version = "5.5.0", features = ["fancy"]}
