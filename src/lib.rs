@@ -1,6 +1,14 @@
-use bevy::{prelude::*, window::WindowMode};
+mod ui;
+use std::collections::HashMap;
 
-pub const LAUNCHER_TITLE: &str = "Bevy Shell - Template";
+use bevy::{prelude::*, window::WindowMode};
+use bevy_inspector_egui::{widgets::InspectorQuery, WorldInspectorPlugin};
+
+use ui::{
+    startup::{self, StartupTimer},
+    title,
+};
+pub const LAUNCHER_TITLE: &str = "Project Flara";
 
 pub fn app(fullscreen: bool) -> App {
     let mode = if fullscreen {
@@ -19,14 +27,10 @@ pub fn app(fullscreen: bool) -> App {
         },
         ..default()
     }))
-    .add_startup_system(load_icon);
+    .add_startup_system(startup::startup_system)
+    .add_system(title::main_screen)
+    .add_plugin(WorldInspectorPlugin::new())
+    .register_type::<StartupTimer>()
+    .register_type::<Interaction>();
     app
-}
-
-fn load_icon(mut commands: Commands, asset_server: Res<AssetServer>) {
-    commands.spawn(Camera2dBundle::default());
-    commands.spawn(SpriteBundle {
-        texture: asset_server.load("bevy.png"),
-        ..default()
-    });
 }

@@ -34,4 +34,5 @@ lto = true
 [dependencies]
 bevy = { version = "0.9.1", features = ["dynamic", "wayland"] }
 image = "0.24.5"
+bevy-inspector-egui = "0.14.0"
 winit = "0.27.5"
