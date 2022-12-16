@@ -3,6 +3,21 @@ use bevy::prelude::*;
 use crate::{AppState, StatePlugin};
 
 impl TitlePlugin {
+    pub fn on_update(
+        mut query: Query<(&Interaction, &Name)>,
+        mut app_state: ResMut<State<AppState>>,
+    ) {
+        let (interaction, _) = query
+            .iter_mut()
+            .find(|(_, name)| name.as_str() == "startup-screen")
+            .unwrap();
+
+        if !(*interaction == Interaction::Clicked) {
+            return;
+        } else {
+            app_state.set(AppState::MainScreen).unwrap()
+        };
+    }
     pub fn on_enter(mut commands: Commands, server: Res<AssetServer>) {
         let font = server.load("NotoSans-Regular.ttf");
 

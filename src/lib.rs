@@ -1,10 +1,12 @@
+pub mod main_screen;
 mod startup;
-use std::collections::HashMap;
-
 use bevy::{prelude::*, window::WindowMode};
 use bevy_inspector_egui::WorldInspectorPlugin;
 
-use startup::{startup::StartupPlugin, startup::StartupTimer, title::{self, TitlePlugin}};
+use startup::{
+    startup::StartupPlugin,
+    title::{self, TitlePlugin},
+};
 pub const LAUNCHER_TITLE: &str = "Project Flara";
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub enum AppState {
