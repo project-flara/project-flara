@@ -1,15 +1,22 @@
-mod ui;
+mod startup;
 use std::collections::HashMap;
 
 use bevy::{prelude::*, window::WindowMode};
-use bevy_inspector_egui::{widgets::InspectorQuery, WorldInspectorPlugin};
+use bevy_inspector_egui::WorldInspectorPlugin;
 
-use ui::{
-    startup::{self, StartupTimer},
-    title,
-};
+use startup::{startup::StartupPlugin, startup::StartupTimer, title::{self, TitlePlugin}};
 pub const LAUNCHER_TITLE: &str = "Project Flara";
+#[derive(Debug, Clone, Eq, PartialEq, Hash)]
+pub enum AppState {
+    StartupScreen,
+    Dialog,
+    MainScreen,
+    TitleScreen,
+}
 
+pub trait StatePlugin {
+    const STATE: AppState;
+}
 pub fn app(fullscreen: bool) -> App {
     let mode = if fullscreen {
         WindowMode::BorderlessFullscreen
@@ -27,10 +34,11 @@ pub fn app(fullscreen: bool) -> App {
         },
         ..default()
     }))
-    .add_startup_system(startup::startup_system)
-    .add_system(title::main_screen)
+    // add the app state type
+    .add_state(AppState::StartupScreen)
+    .add_plugin(StartupPlugin)
+    .add_plugin(TitlePlugin)
     .add_plugin(WorldInspectorPlugin::new())
-    .register_type::<StartupTimer>()
     .register_type::<Interaction>();
     app
 }
