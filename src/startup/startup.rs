@@ -11,33 +11,40 @@ pub struct StartupMarker;
 #[reflect(Component)]
 pub struct StartupTimer(Timer);
 impl StartupPlugin {
-    pub fn on_enter(mut commands: Commands, server: Res<AssetServer>) {
+    pub fn on_enter(
+        mut commands: Commands,
+        server: Res<AssetServer>,
+        mut animations: ResMut<Assets<AnimationClip>>,
+    ) {
         commands.spawn(Camera2dBundle::default());
         let font = server.load("NotoSans-Regular.ttf");
         let startup_name = Name::new("startup-screen");
+        let author_name = Name::new("author-name");
         // Creating the animation
         let mut animation = AnimationClip::default();
         // A curve can modify a single part of a transform, here the translation
         animation.add_curve_to_path(
             EntityPath {
-                parts: vec![startup_name.clone()],
+                parts: vec![author_name.clone()],
             },
             VariableCurve {
-                keyframe_timestamps: vec![0.0, 1.5, 3.0],
+                keyframe_timestamps: vec![0.0, 0.5, 0.1],
                 keyframes: Keyframes::Scale(vec![
                     Vec3::splat(0.2),
-                    Vec3::splat(2.0),
+                    Vec3::splat(1.5),
                     Vec3::splat(1.0),
                 ]),
             },
         );
+        // Create the animation player, and set it to repeat
+        let mut player = AnimationPlayer::default();
+        player.play(animations.add(animation));
         let mut startup = commands.spawn((
             ButtonBundle {
                 background_color: BackgroundColor(Color::FUCHSIA),
                 style: Style {
                     position: UiRect::all(Val::Percent(0.0)),
                     size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
-                    flex_direction: FlexDirection::Column,
                     justify_content: JustifyContent::Center,
                     align_items: AlignItems::Center,
                     ..default()
@@ -49,29 +56,45 @@ impl StartupPlugin {
             StartupTimer(Timer::from_seconds(5.0, TimerMode::Once)),
         ));
         startup.with_children(|parent| {
-            parent.spawn(TextBundle {
-                text: Text::from_section(
-                    "Produced by",
-                    TextStyle {
-                        font: font.clone(),
-                        font_size: 36.0,
+            parent
+                .spawn((
+                    NodeBundle {
+                        style: Style {
+                            flex_direction: FlexDirection::Column,
+                            justify_content: JustifyContent::Center,
+                            align_items: AlignItems::Center,
+                            ..default()
+                        },
                         ..default()
                     },
-                ),
-                ..default()
-            });
+                    player,
+                    author_name,
+                ))
+                .with_children(|parent| {
+                    parent.spawn(TextBundle {
+                        text: Text::from_section(
+                            "Produced by",
+                            TextStyle {
+                                font: font.clone(),
+                                font_size: 36.0,
+                                ..default()
+                            },
+                        ),
+                        ..default()
+                    });
 
-            parent.spawn(TextBundle {
-                text: Text::from_section(
-                    "Fiana Fortressia",
-                    TextStyle {
-                        font: font.clone(),
-                        font_size: 64.0,
+                    parent.spawn(TextBundle {
+                        text: Text::from_section(
+                            "Fiana Fortressia",
+                            TextStyle {
+                                font: font.clone(),
+                                font_size: 64.0,
+                                ..default()
+                            },
+                        ),
                         ..default()
-                    },
-                ),
-                ..default()
-            });
+                    });
+                });
         });
     }
     pub fn on_update(
