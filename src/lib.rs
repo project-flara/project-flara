@@ -6,8 +6,8 @@ use bevy_inspector_egui::WorldInspectorPlugin;
 
 use main_screen::MainScreenPlugin;
 use startup::{
-    startup::StartupPlugin,
-    title::{self, TitlePlugin},
+    startup_screen::StartupPlugin,
+    title::{TitlePlugin},
 };
 use story::menu::StoryMenuPlugin;
 pub const LAUNCHER_TITLE: &str = "Project Flara";

@@ -1,5 +1,4 @@
-pub mod startup;
+pub mod startup_screen;
 pub mod title;
-use bevy::prelude::*;
 
-use crate::AppState;
+

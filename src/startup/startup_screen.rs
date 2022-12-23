@@ -1,4 +1,4 @@
-use std::time::Duration;
+
 
 use bevy::prelude::*;
 use bevy_inspector_egui::Inspectable;
@@ -109,10 +109,10 @@ impl StartupPlugin {
 
         if !timer.finished() && !(*interaction == Interaction::Clicked) {
             timer.tick(time.delta());
-            return;
+            
         } else {
             app_state.set(AppState::TitleScreen).unwrap()
-        };
+        }
     }
     pub fn on_exit(query: Query<(Entity, &Name)>, mut commands: Commands) {
         let entity = query
