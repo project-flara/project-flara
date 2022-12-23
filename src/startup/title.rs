@@ -9,14 +9,12 @@ impl TitlePlugin {
     ) {
         let (interaction, _) = query
             .iter_mut()
-            .find(|(_, name)| name.as_str() == "startup-screen")
+            .find(|(_, name)| name.as_str() == "play-button")
             .unwrap();
 
-        if !(*interaction == Interaction::Clicked) {
-            return;
-        } else {
-            app_state.set(AppState::MainScreen).unwrap()
-        };
+        if *interaction == Interaction::Clicked {
+            app_state.set(AppState::MainScreen).unwrap();
+        }
     }
     pub fn on_enter(mut commands: Commands, server: Res<AssetServer>) {
         let font = server.load("NotoSans-Regular.ttf");
@@ -49,14 +47,17 @@ impl TitlePlugin {
             });
 
             parent
-                .spawn(ButtonBundle {
-                    background_color: BackgroundColor(Color::PINK),
-                    style: Style {
-                        padding: UiRect::all(Val::Px(15.0)),
+                .spawn((
+                    ButtonBundle {
+                        background_color: BackgroundColor(Color::PINK),
+                        style: Style {
+                            padding: UiRect::all(Val::Px(15.0)),
+                            ..default()
+                        },
                         ..default()
                     },
-                    ..default()
-                })
+                    Name::new("play-button"),
+                ))
                 .with_children(|parent| {
                     parent.spawn(TextBundle {
                         text: Text::from_section(
@@ -94,6 +95,10 @@ impl Plugin for TitlePlugin {
 
         app.add_system_set(
             SystemSet::on_exit(Self::STATE).with_system(Self::on_exit),
+        );
+
+        app.add_system_set(
+            SystemSet::on_update(Self::STATE).with_system(Self::on_update),
         );
     }
 }
