@@ -5,7 +5,7 @@ use super::story_loading::{load, MainStory};
 pub struct MainStoryMenu;
 
 impl Plugin for MainStoryMenu {
-    fn build(&self, app: &mut App) {}
+    fn build(&self, _app: &mut App) {}
 }
 
 impl MainStoryMenu {
@@ -15,7 +15,7 @@ impl MainStoryMenu {
             .spawn(NodeBundle { ..default() })
             .with_children(|parent| {
                 for variation in MainStory::VARIATIONS {
-                    match (unsafe { load(&variation) }) {
+                    match unsafe { load(&variation) } {
                         Ok(story) => {
                             parent
                                 .spawn((
@@ -37,7 +37,7 @@ impl MainStoryMenu {
                                     parent.spawn(ButtonBundle { ..default() });
                                 });
                         }
-                        Err(err) => {
+                        Err(_err) => {
                             parent
                                 .spawn(NodeBundle { ..default() })
                                 .with_children(|parent| {
