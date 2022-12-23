@@ -27,6 +27,11 @@ impl ToString for MainStory {
         .to_string()
     }
 }
+///
+/// # Safety
+/// As unsafety as [dlopen::Container::load()]
+/// 
+///  
 pub unsafe fn load(
     story: &MainStory,
 ) -> Result<Container<MainStoryPluginAPI>, dlopen::Error> {
