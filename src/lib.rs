@@ -9,7 +9,7 @@ use startup::{
     startup_screen::StartupPlugin,
     title::{TitlePlugin},
 };
-use story::menu::StoryMenuPlugin;
+use story::{main_story::MainStoryMenu, menu::StoryMenuPlugin};
 pub const LAUNCHER_TITLE: &str = "Project Flara";
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub enum AppState {
@@ -54,6 +54,7 @@ pub fn app(fullscreen: bool) -> App {
     .add_plugin(TitlePlugin)
     .add_plugin(MainScreenPlugin)
     .add_plugin(StoryMenuPlugin)
+    .add_plugin(MainStoryMenu)
     .add_plugin(WorldInspectorPlugin::new())
     .register_type::<Interaction>();
     app
