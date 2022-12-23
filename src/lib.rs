@@ -1,12 +1,15 @@
 pub mod main_screen;
 mod startup;
+pub mod story;
 use bevy::{prelude::*, window::WindowMode};
 use bevy_inspector_egui::WorldInspectorPlugin;
 
+use main_screen::MainScreenPlugin;
 use startup::{
     startup::StartupPlugin,
     title::{self, TitlePlugin},
 };
+use story::menu::StoryMenuPlugin;
 pub const LAUNCHER_TITLE: &str = "Project Flara";
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub enum AppState {
@@ -14,6 +17,15 @@ pub enum AppState {
     Dialog,
     MainScreen,
     TitleScreen,
+    Story(StoryState),
+    Event,
+}
+
+#[derive(Debug, Clone, Eq, PartialEq, Hash)]
+pub enum StoryState {
+    Menu,
+    MainStory,
+    Events,
 }
 
 pub trait StatePlugin {
@@ -40,6 +52,8 @@ pub fn app(fullscreen: bool) -> App {
     .add_state(AppState::StartupScreen)
     .add_plugin(StartupPlugin)
     .add_plugin(TitlePlugin)
+    .add_plugin(MainScreenPlugin)
+    .add_plugin(StoryMenuPlugin)
     .add_plugin(WorldInspectorPlugin::new())
     .register_type::<Interaction>();
     app

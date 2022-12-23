@@ -7,7 +7,9 @@ edition = "2021"
 members = [
     "launchers/wasm",
     "launchers/native",
-    "utils"
+    "utils",
+    "story/foundation",
+    "framework"
 ]
 
 exclude = [
@@ -36,3 +38,6 @@ bevy = { version = "0.9.1", features = ["dynamic", "wayland"] }
 image = "0.24.5"
 bevy-inspector-egui = "0.14.0"
 winit = "0.27.5"
+dlopen = "0.1.8"
+dlopen_derive = "0.1.4"
+framework = { version = "0.1.0", path = "framework" }
