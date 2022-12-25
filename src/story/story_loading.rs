@@ -1,3 +1,4 @@
+use bevy::prelude::*;
 use dlopen::wrapper::Container;
 use dlopen::wrapper::WrapperApi;
 use dlopen_derive::WrapperApi;
@@ -7,6 +8,7 @@ pub struct MainStoryPluginAPI {
     chapter: fn() -> Box<dyn Chapter>,
 }
 
+#[derive(Debug, Clone, Eq, PartialEq, Hash, Component)]
 pub enum MainStory {
     // Flara Foundation
     Foundation,
@@ -15,7 +17,7 @@ pub enum MainStory {
 impl MainStory {
     pub const VARIATIONS: [MainStory; 1] = [Self::Foundation];
     pub fn module_name(&self) -> String {
-        "libflarastory-".to_string() + &self.to_string() + dynamic_module()
+        "libflarastory_".to_string() + &self.to_string().to_lowercase() + "." + dynamic_module()
     }
 }
 
@@ -27,10 +29,11 @@ impl ToString for MainStory {
         .to_string()
     }
 }
+
 ///
 /// # Safety
 /// As unsafety as [dlopen::Container::load()]
-/// 
+///
 ///  
 pub unsafe fn load(
     story: &MainStory,
@@ -54,7 +57,7 @@ mod tests {
     #[test]
     pub fn load_main_stories() {
         let cont: Container<MainStoryPluginAPI> =
-            unsafe { Container::load("libfoundation.so") }
+            unsafe { Container::load("libflarastory_foundation.so") }
                 .expect("Could not open library or load symbols");
         let stories = cont.chapter().stories();
         let first = stories.first().unwrap();
