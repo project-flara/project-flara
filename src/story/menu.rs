@@ -43,6 +43,8 @@ impl StoryMenuPlugin {
                             style: Style {
                                 justify_content: JustifyContent::Center,
                                 align_items: AlignItems::Center,
+                                padding: UiRect::all(Val::Px(5.0)),
+
                                 ..default()
                             },
                             ..default()
