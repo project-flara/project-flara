@@ -1,0 +1,11 @@
+[package]
+name = "flarastory-boutique"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+framework = { version = "0.1.0", path = "../../../framework" }
+bevy = { version = "0.9.1", features = ["dynamic"] }
+bevy_rpg = { version = "0.1.0", path = "../../../../bevy-rpg" }
