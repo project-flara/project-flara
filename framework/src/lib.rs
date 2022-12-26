@@ -10,7 +10,10 @@ where
     fn run(&self) -> BoxedSystem;
 }
 
-pub trait Chapter {
+pub trait Chapter
+where
+    Self: Send + Sync,
+{
     fn name(&self) -> String;
     fn author(&self) -> String;
     fn license(&self) -> String;
