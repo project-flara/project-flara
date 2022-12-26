@@ -1,6 +1,9 @@
 use bevy::prelude::*;
 
-pub trait Story {
+pub trait Story
+where
+    Self: Send + Sync,
+{
     fn name(&self) -> String;
     fn author(&self) -> String;
     fn license(&self) -> String;
