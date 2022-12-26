@@ -1,6 +1,6 @@
 use framework::{Chapter, Story};
 
-pub mod intro;
+pub mod prelude;
 
 #[no_mangle]
 pub fn chapter() -> Box<dyn Chapter> {
@@ -23,6 +23,6 @@ impl Chapter for FoundationChapter {
     }
 
     fn stories(&self) -> Vec<Box<dyn Story>> {
-        vec![Box::new(intro::FoundationIntroduction)]
+        vec![Box::new(prelude::FoundationIntroduction)]
     }
 }

@@ -9,5 +9,5 @@ crate-type = ["dylib"]
 
 [dependencies]
 bevy = { version = "0.9.1", features = ["dynamic"] }
-bevy_rpg = { version = "0.1.0", path = "../../../bevy-rpg" }
-framework = { version = "0.1.0", path = "../../framework" }
+bevy_rpg = { version = "0.1.0", path = "../../../../bevy-rpg" }
+framework = { version = "0.1.0", path = "../../../framework" }
