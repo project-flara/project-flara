@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use bevy::{ecs::system::BoxedSystem, prelude::*};
 
 pub trait Story
 where
@@ -7,7 +7,7 @@ where
     fn name(&self) -> String;
     fn author(&self) -> String;
     fn license(&self) -> String;
-    fn run(&self) -> SystemStage;
+    fn run(&self) -> BoxedSystem;
 }
 
 pub trait Chapter {

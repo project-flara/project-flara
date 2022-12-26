@@ -16,7 +16,7 @@ impl Story for FoundationIntroduction {
         String::from("CC-BY-SA 4.0")
     }
 
-    fn run(&self) -> SystemStage {
+    fn run(&self) -> BoxedSystem {
         fn run(commands: Commands, font: Res<AssetServer>) {
             let text_style = TextStyle {
                 font: font.load("NotoSans-Regular.ttf"),
@@ -66,6 +66,6 @@ impl Story for FoundationIntroduction {
             dialogs.start(commands);
         }
 
-        SystemStage::parallel().with_system(run)
+        Box::new(IntoSystem::into_system(run))
     }
 }
