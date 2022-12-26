@@ -36,17 +36,12 @@ impl Story for FoundationIntroduction {
 
             let player: PC = dialogs.single("You").into();
 
+            let owner: PC = dialogs.single("").into();
             dialogs.add([
-                d((&player, "Thank you everyone!")),
-                d((&player, "I can't imagine it's already time for us to graduate!")),
-                d((&player, "Huh, I still haven't got a job.")),
-                d((&player, "Would you like to be interested in joining? ")),
-                d((&player, "Eh?? What is it?")),
-                d((&player, "It's basically a charity foundation. It's new, and it's made by the .")),
-                d((&player, "Okay, let me check their website.")),
-                d((&player, "R&D Consultant")),
-                d((&player, "Okay, but let's sign up first."))
-                ////////////////////////////////////////////////////
+                d((&owner, "Hii!")),
+                d((&owner, "So you're here now!")),
+                d((&owner, "So that means")),
+                d((&owner, "But si")),
             ]);
 
             dialogs.start(commands);
