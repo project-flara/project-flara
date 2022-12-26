@@ -8,7 +8,9 @@ members = [
     "launchers/wasm",
     "launchers/native",
     "utils",
-    "story/foundation",
+    "story/mainline/foundation",
+    "story/mainline/boutique",
+    "story/mainline/cafe",
     "framework"
 ]
 
@@ -41,5 +43,5 @@ winit = "0.27.5"
 dlopen = "0.1.8"
 dlopen_derive = "0.1.4"
 framework = { version = "0.1.0", path = "framework" }
-flarastory-foundation = { version = "0.1.0", path = "story/foundation" }
+flarastory-foundation = { version = "0.1.0", path = "story/mainline/foundation" }
 bevy_rpg = { version = "0.1.0", path = "../bevy-rpg" }
