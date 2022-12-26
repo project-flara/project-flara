@@ -4,6 +4,10 @@ use framework::Story;
 pub struct FoundationIntroduction;
 
 impl Story for FoundationIntroduction {
+    fn id(&self) -> String {
+        String::from("flara/mainline/foundation/prelude")
+    }
+
     fn name(&self) -> String {
         String::from("Foundation Prelude")
     }

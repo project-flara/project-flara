@@ -5,6 +5,7 @@ where
     Self: Send + Sync,
 {
     fn name(&self) -> String;
+    fn id(&self) -> String;
     fn author(&self) -> String;
     fn license(&self) -> String;
     fn run(&self) -> BoxedSystem;
