@@ -3345,8 +3345,10 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "bevy-inspector-egui",
+ "bevy_rpg",
  "dlopen",
  "dlopen_derive",
+ "flarastory-foundation",
  "framework",
  "image 0.24.5",
  "winit",

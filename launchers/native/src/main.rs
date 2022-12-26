@@ -21,7 +21,7 @@ fn set_window_icon(windows: NonSend<WinitWindows>) {
     primary.set_window_icon(Some(icon));
 }
 
-fn main() {
+pub fn main() {
     let mut app = project_flara::app(false);
 
     info!("Starting launcher: Native");

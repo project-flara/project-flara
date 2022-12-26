@@ -1,4 +1,7 @@
-use bevy::prelude::*;
+use bevy::{
+    ecs::system::{BoxedSystem, IntoSystem},
+    prelude::*,
+};
 use bevy_rpg::{characters::prelude::*, d, dialog::StyleDefaults, Dialogs};
 use framework::Story;
 pub struct FoundationIntroduction;
@@ -9,7 +12,7 @@ impl Story for FoundationIntroduction {
     }
 
     fn name(&self) -> String {
-        String::from("Foundation Prelude")
+        String::from("Prelude")
     }
 
     fn author(&self) -> String {
@@ -17,7 +20,7 @@ impl Story for FoundationIntroduction {
     }
 
     fn license(&self) -> String {
-        String::from("CC-BY-SA 4.0")
+        String::from("CC-BY-SA-4.0")
     }
 
     fn run(&self) -> BoxedSystem {

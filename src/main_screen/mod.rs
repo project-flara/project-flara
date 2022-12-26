@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::{AppState, StoryState, StatePlugin};
+use crate::{state::AppState, state::StoryState, StatePlugin};
 pub struct MainScreenPlugin;
 
 impl Plugin for MainScreenPlugin {

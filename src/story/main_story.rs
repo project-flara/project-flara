@@ -1,62 +1,35 @@
-use std::collections::HashMap;
-
 use bevy::prelude::*;
-use dlopen::wrapper::Container;
 
-use crate::{AppState, StoryState};
+use crate::{
+    state::{AppState, Story, StoryState},
+    StatePlugin,
+};
 
-use super::story_loading::{load, MainStory, MainStoryPluginAPI};
-
+use super::{
+    chapter_menu::CurrentChapterState,
+    story_loading::{stories::Stories, MainStory},
+};
 pub struct MainStoryMenu;
 
 impl Plugin for MainStoryMenu {
     fn build(&self, app: &mut App) {
         app.init_resource::<Stories>();
         app.add_system_set(
-            SystemSet::on_enter(AppState::Story(StoryState::MainStory))
-                .with_system(Self::on_enter),
+            SystemSet::on_enter(Self::STATE).with_system(Self::on_enter),
         );
 
         app.add_system_set(
-            SystemSet::on_exit(AppState::Story(StoryState::MainStory))
-                .with_system(Self::on_update),
+            SystemSet::on_exit(Self::STATE).with_system(Self::on_update),
         );
 
         app.add_system_set(
-            SystemSet::on_exit(AppState::Story(StoryState::MainStory))
-                .with_system(Self::on_exit),
+            SystemSet::on_exit(Self::STATE).with_system(Self::on_exit),
         );
-    }
-}
-
-#[derive(Resource, Default)]
-pub struct Stories {
-    pub stories: HashMap<MainStory, Container<MainStoryPluginAPI>>,
-    pub errors: HashMap<MainStory, dlopen::Error>,
-    pub loaded: bool,
-}
-impl Stories {
-    pub fn load(&mut self) {
-        for variation in MainStory::VARIATIONS {
-            match unsafe { load(&variation) } {
-                Ok(story) => {
-                    self.stories.insert(variation, story);
-                }
-                Err(error) => {
-                    self.errors.insert(variation, error);
-                }
-            }
-        }
-
-        self.loaded = true;
     }
 }
 
 #[cfg(test)]
 mod test {
-    use std::collections::HashMap;
-
-    use dlopen::wrapper::Container;
 
     use crate::story::story_loading::MainStory;
 
@@ -66,21 +39,22 @@ mod test {
     fn test_resource() {
         let mut stories = Stories::default();
 
-        stories.load();
+        stories.load_mainline();
         let storiess = stories
+            .mainline
             .errors
             .iter()
             .collect::<Vec<(&MainStory, &dlopen::Error)>>();
         if storiess.len() != 0 {
             panic!("{storiess:#?}")
         }
-        let first = stories.stories.values().next().unwrap().chapter();
+        let first = stories.mainline.stories.values().next().unwrap().chapter();
         assert_eq!(first.name(), String::from("Sakura Blossoms Everyday!"));
         assert_eq!(first.author(), String::from("Fiana Fortressia"));
         assert_eq!(first.license(), String::from("CC-BY-SA-4.0"));
 
         assert_eq!(
-            *stories.stories.keys().next().unwrap(),
+            *stories.mainline.stories.keys().next().unwrap(),
             MainStory::Foundation
         );
     }
@@ -95,12 +69,11 @@ impl MainStoryMenu {
         commands
             .spawn(NodeBundle { ..default() })
             .with_children(|parent| {
-                if !stories.loaded {
-                    stories.load();
+                if !stories.mainline.loaded {
+                    stories.load_mainline()
                 }
 
-                for (id, story) in &stories.stories {
-                    println!("{id:?}");
+                for (id, story) in &stories.mainline.stories {
                     parent
                         .spawn((ButtonBundle { ..default() }, id.clone()))
                         .with_children(|parent| {
@@ -122,16 +95,22 @@ impl MainStoryMenu {
     }
     pub fn on_update(
         query: Query<(&Interaction, &MainStory)>,
-        _commands: Commands,
+        mut commands: Commands,
         mut state: ResMut<State<AppState>>,
+        stories: Res<Stories>,
     ) {
         for (interaction, name) in query.iter() {
             if *interaction == Interaction::Clicked {
-                state
-                    .set(AppState::Story(StoryState::Running(
-                        crate::Story::MainStory(name.clone()),
-                    )))
-                    .unwrap();
+                state.set(AppState::Story(StoryState::ChapterMenu)).unwrap();
+                commands.insert_resource(CurrentChapterState {
+                    chapter: stories
+                        .mainline
+                        .stories
+                        .get(name)
+                        .unwrap()
+                        .clone()
+                        .chapter(),
+                });
             };
         }
     }
@@ -146,4 +125,9 @@ impl MainStoryMenu {
             )
             .despawn_recursive();
     }
+}
+
+impl StatePlugin for MainStoryMenu {
+    const STATE: crate::state::AppState =
+        AppState::Story(StoryState::MainStory);
 }

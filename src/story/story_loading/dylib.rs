@@ -1,32 +1,44 @@
-use bevy::prelude::*;
+use std::fmt::Debug;
+
 use dlopen::wrapper::Container;
 use dlopen::wrapper::WrapperApi;
 use dlopen_derive::WrapperApi;
 use framework::Chapter;
+
+use super::EventStory;
+use super::MainStory;
 #[derive(WrapperApi)]
 pub struct MainStoryPluginAPI {
     chapter: fn() -> Box<dyn Chapter>,
 }
 
-#[derive(Debug, Clone, Eq, PartialEq, Hash, Component)]
-pub enum MainStory {
-    // Flara Foundation
-    Foundation,
-}
-
-impl MainStory {
-    pub const VARIATIONS: [MainStory; 1] = [Self::Foundation];
-    pub fn module_name(&self) -> String {
-        "libflarastory_".to_string() + &self.to_string().to_lowercase() + "." + dynamic_module()
+impl StoryDylib for MainStory {}
+impl StoryDylib for EventStory {}
+impl<A: StoryDylib> StoryDylib for &A {}
+pub trait StoryDylib
+where
+    Self: std::fmt::Debug,
+{
+    fn module_name(&self) -> String
+    where
+        Self: ToString,
+    {
+        "libflarastory_".to_string()
+            + &self.to_string().to_lowercase()
+            + "."
+            + dynamic_module()
     }
 }
 
-impl ToString for MainStory {
-    fn to_string(&self) -> String {
-        (match self {
-            Self::Foundation => "foundation",
-        })
-        .to_string()
+impl std::fmt::Display for MainStory {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        Debug::fmt(self, f)
+    }
+}
+
+impl std::fmt::Display for EventStory {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        Debug::fmt(self, f)
     }
 }
 
@@ -35,9 +47,12 @@ impl ToString for MainStory {
 /// As unsafety as [dlopen::Container::load()]
 ///
 ///  
-pub unsafe fn load(
-    story: &MainStory,
-) -> Result<Container<MainStoryPluginAPI>, dlopen::Error> {
+pub unsafe fn load<A>(
+    story: A,
+) -> Result<Container<MainStoryPluginAPI>, dlopen::Error>
+where
+    A: StoryDylib + std::fmt::Display,
+{
     Container::load(story.module_name())
 }
 fn dynamic_module() -> &'static str {
@@ -62,8 +77,8 @@ mod tests {
         let stories = cont.chapter().stories();
         let first = stories.first().unwrap();
 
-        assert_eq!(first.name(), String::from("Foundation Prelude"));
+        assert_eq!(first.name(), String::from("Prelude"));
         assert_eq!(first.author(), String::from("Fiana Fortressia"));
-        assert_eq!(first.license(), String::from("CC-BY-SA 4.0"));
+        assert_eq!(first.license(), String::from("CC-BY-SA-4.0"));
     }
 }

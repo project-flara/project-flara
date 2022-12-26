@@ -1,35 +1,20 @@
 pub mod main_screen;
 mod startup;
+pub mod state;
 pub mod story;
 use bevy::{prelude::*, window::WindowMode};
 use bevy_inspector_egui::WorldInspectorPlugin;
 
 use main_screen::MainScreenPlugin;
-use startup::{
-    startup_screen::StartupPlugin,
-    title::{TitlePlugin},
+use startup::{startup_screen::StartupPlugin, title::TitlePlugin};
+use story::{
+    chapter_menu::ChapterMenuPlugin, main_story::MainStoryMenu,
+    menu::StoryMenuPlugin,
 };
-use story::{main_story::MainStoryMenu, menu::StoryMenuPlugin};
 pub const LAUNCHER_TITLE: &str = "Project Flara";
-#[derive(Debug, Clone, Eq, PartialEq, Hash)]
-pub enum AppState {
-    StartupScreen,
-    Dialog,
-    MainScreen,
-    TitleScreen,
-    Story(StoryState),
-    Event,
-}
-
-#[derive(Debug, Clone, Eq, PartialEq, Hash)]
-pub enum StoryState {
-    Menu,
-    MainStory,
-    Events,
-}
 
 pub trait StatePlugin {
-    const STATE: AppState;
+    const STATE: crate::state::AppState;
 }
 pub fn app(fullscreen: bool) -> App {
     let mode = if fullscreen {
@@ -49,12 +34,13 @@ pub fn app(fullscreen: bool) -> App {
         ..default()
     }))
     // add the app state type
-    .add_state(AppState::StartupScreen)
+    .add_state(state::AppState::StartupScreen)
     .add_plugin(StartupPlugin)
     .add_plugin(TitlePlugin)
     .add_plugin(MainScreenPlugin)
     .add_plugin(StoryMenuPlugin)
     .add_plugin(MainStoryMenu)
+    .add_plugin(ChapterMenuPlugin)
     .add_plugin(WorldInspectorPlugin::new())
     .register_type::<Interaction>();
     app

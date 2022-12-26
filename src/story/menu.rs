@@ -1,6 +1,9 @@
 use bevy::prelude::*;
 
-use crate::{AppState, StatePlugin, StoryState};
+use crate::{
+    state::{AppState, StoryState},
+    StatePlugin,
+};
 
 pub struct StoryMenuPlugin;
 

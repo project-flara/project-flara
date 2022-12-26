@@ -4,6 +4,10 @@ version = "0.1.0"
 edition = "2021"
 workspace = "../.."
 
+[[bin]]
+name="native-launcher"
+path="src/main.rs"
+
 [dependencies]
 project-flara = { package = "project-flara", path = "../.." }
 miette = { version = "5.5.0", features = ["fancy"] }

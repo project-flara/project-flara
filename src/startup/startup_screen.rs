@@ -1,9 +1,7 @@
-
-
 use bevy::prelude::*;
 use bevy_inspector_egui::Inspectable;
 
-use crate::{AppState, StatePlugin};
+use crate::{state::AppState, StatePlugin};
 #[derive(Component, Inspectable)]
 pub struct StartupMarker;
 
@@ -41,7 +39,6 @@ impl StartupPlugin {
         player.play(animations.add(animation));
         let mut startup = commands.spawn((
             ButtonBundle {
-                background_color: BackgroundColor(Color::FUCHSIA),
                 style: Style {
                     position: UiRect::all(Val::Percent(0.0)),
                     size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
@@ -109,7 +106,6 @@ impl StartupPlugin {
 
         if !timer.finished() && !(*interaction == Interaction::Clicked) {
             timer.tick(time.delta());
-            
         } else {
             app_state.set(AppState::TitleScreen).unwrap()
         }

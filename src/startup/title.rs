@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::{AppState, StatePlugin};
+use crate::{state::AppState, StatePlugin};
 
 impl TitlePlugin {
     pub fn on_update(
