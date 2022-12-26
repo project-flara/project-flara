@@ -1,6 +1,6 @@
 pub mod main_screen;
 mod startup;
-pub mod state;
+pub use framework::states as state;
 pub mod story;
 use bevy::{prelude::*, window::WindowMode};
 use bevy_inspector_egui::WorldInspectorPlugin;

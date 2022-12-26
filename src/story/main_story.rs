@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use framework::states::MainStory;
 
 use crate::{
     state::{AppState, Story, StoryState},
@@ -6,8 +7,7 @@ use crate::{
 };
 
 use super::{
-    chapter_menu::CurrentChapterState,
-    story_loading::{stories::Stories, MainStory},
+    chapter_menu::CurrentChapterState, story_loading::stories::Stories,
 };
 pub struct MainStoryMenu;
 
@@ -31,7 +31,7 @@ impl Plugin for MainStoryMenu {
 #[cfg(test)]
 mod test {
 
-    use crate::story::story_loading::MainStory;
+    use framework::states::MainStory;
 
     use super::Stories;
 

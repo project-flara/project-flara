@@ -5,8 +5,8 @@ use dlopen::wrapper::WrapperApi;
 use dlopen_derive::WrapperApi;
 use framework::Chapter;
 
-use super::EventStory;
-use super::MainStory;
+use framework::states::EventStory;
+use framework::states::MainStory;
 #[derive(WrapperApi)]
 pub struct MainStoryPluginAPI {
     chapter: fn() -> Box<dyn Chapter>,
@@ -27,18 +27,6 @@ where
             + &self.to_string().to_lowercase()
             + "."
             + dynamic_module()
-    }
-}
-
-impl std::fmt::Display for MainStory {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        Debug::fmt(self, f)
-    }
-}
-
-impl std::fmt::Display for EventStory {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        Debug::fmt(self, f)
     }
 }
 
@@ -80,5 +68,15 @@ mod tests {
         assert_eq!(first.name(), String::from("Prelude"));
         assert_eq!(first.author(), String::from("Fiana Fortressia"));
         assert_eq!(first.license(), String::from("CC-BY-SA-4.0"));
+    }
+}
+
+impl StoryDylib for framework::states::Story {
+    fn module_name(&self) -> String
+where {
+        match self {
+            Self::MainStory(story) => story.to_string(),
+            Self::EventStory(story) => story.to_string(),
+        }
     }
 }

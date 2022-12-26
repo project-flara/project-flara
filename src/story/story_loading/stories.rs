@@ -6,10 +6,9 @@ use bevy::prelude::*;
 use dlopen::wrapper::Container;
 
 use super::dylib::StoryDylib;
-use super::{
-    dylib::{load, MainStoryPluginAPI},
-    EventStory, MainStory, Variation,
-};
+use super::dylib::{load, MainStoryPluginAPI};
+
+use framework::states::{EventStory, MainStory, Variation};
 
 #[derive(Resource, Default)]
 pub struct Stories {
