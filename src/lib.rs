@@ -1,5 +1,6 @@
+#![doc = include_str!("./README.md")]
 pub mod main_screen;
-mod startup;
+pub mod startup;
 pub use framework::states as state;
 pub mod story;
 use bevy::{prelude::*, window::WindowMode};

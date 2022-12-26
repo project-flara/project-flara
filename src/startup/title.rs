@@ -1,3 +1,5 @@
+//! Title screen where a button will say "PRESS TO CONTINUE"
+//!
 use bevy::prelude::*;
 
 use crate::{state::AppState, StatePlugin};

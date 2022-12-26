@@ -1,4 +1,6 @@
-use bevy::{ecs::system::BoxedSystem, prelude::*};
+
+
+use bevy::ecs::system::BoxedSystem;
 
 pub trait Story
 where

@@ -1,4 +1,3 @@
-use std::fmt::Debug;
 
 use dlopen::wrapper::Container;
 use dlopen::wrapper::WrapperApi;
@@ -32,7 +31,7 @@ where
 
 ///
 /// # Safety
-/// As unsafety as [dlopen::Container::load()]
+/// As unsafety as [dlopen::wrapper::Container::load()]
 ///
 ///  
 pub unsafe fn load<A>(

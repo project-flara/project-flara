@@ -1,3 +1,5 @@
+//! Main screen
+//!
 use bevy::prelude::*;
 
 use crate::{state::AppState, state::StoryState, StatePlugin};

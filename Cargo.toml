@@ -44,4 +44,7 @@ dlopen = "0.1.8"
 dlopen_derive = "0.1.4"
 framework = { version = "0.1.0", path = "framework" }
 flarastory-foundation = { version = "0.1.0", path = "story/mainline/foundation" }
+flarastory-boutique = { version = "0.1.0", path = "story/mainline/boutique" }
+flarastory-cafe = { version = "0.1.0", path = "story/mainline/cafe" }
 bevy_rpg = { version = "0.1.0", path = "../bevy-rpg" }
+bevy_rapier2d = { version = "0.19.0", features = ["simd-stable"]}

@@ -1,3 +1,5 @@
+/// Code that runs the system exported by [framework::Story::run()]
+
 use crate::{
     state::{AppState, StoryState},
     StatePlugin,

@@ -1,3 +1,6 @@
+//! Code for the startup screen that usually contains the developer's logo, etc.
+//!
+
 use bevy::prelude::*;
 use bevy_inspector_egui::Inspectable;
 
