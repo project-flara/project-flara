@@ -1078,6 +1078,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c1db59621ec70f09c5e9b597b220c7a2b43611f4710dc03ceb8748637775692c"
 
 [[package]]
+name = "cafe"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "bevy_rpg",
+ "framework",
+]
+
+[[package]]
 name = "calloop"
 version = "0.10.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1724,6 +1733,15 @@ checksum = "0ce7134b9999ecaf8bcd65542e436736ef32ddca1b3e06094cb6ec5755203b80"
 [[package]]
 name = "flara-utils"
 version = "0.1.0"
+
+[[package]]
+name = "flarastory-boutique"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "bevy_rpg",
+ "framework",
+]
 
 [[package]]
 name = "flarastory-foundation"
