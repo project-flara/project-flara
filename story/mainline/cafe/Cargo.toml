@@ -1,0 +1,11 @@
+[package]
+name = "cafe"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bevy = { version = "0.9.1", features = ["dynamic"] }
+bevy_rpg = { version = "0.1.0", path = "../../../../bevy-rpg" }
+framework = { version = "0.1.0", path = "../../../framework" }
