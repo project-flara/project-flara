@@ -77,6 +77,7 @@ impl StartupPlugin {
                             TextStyle {
                                 font: font.clone(),
                                 font_size: 36.0,
+                                color: Color::BLACK,
                                 ..default()
                             },
                         ),
@@ -89,6 +90,7 @@ impl StartupPlugin {
                             TextStyle {
                                 font: font.clone(),
                                 font_size: 64.0,
+                                color: Color::BLACK,
                                 ..default()
                             },
                         ),
