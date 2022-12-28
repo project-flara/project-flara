@@ -34,6 +34,7 @@ pub fn app(fullscreen: bool) -> App {
         },
         ..default()
     }))
+    .add_startup_system(camera)
     // add the app state type
     .add_state(state::AppState::StartupScreen)
     .add_plugin(StartupPlugin)
@@ -45,4 +46,8 @@ pub fn app(fullscreen: bool) -> App {
     .add_plugin(WorldInspectorPlugin::new())
     .register_type::<Interaction>();
     app
+}
+
+fn camera(mut commands: Commands) {
+    commands.spawn((Camera2dBundle::default(), MainCamera));
 }

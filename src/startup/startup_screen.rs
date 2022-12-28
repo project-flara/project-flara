@@ -17,7 +17,6 @@ impl StartupPlugin {
         server: Res<AssetServer>,
         mut animations: ResMut<Assets<AnimationClip>>,
     ) {
-        commands.spawn(Camera2dBundle::default());
         let font = server.load("NotoSans-Regular.ttf");
         let startup_name = Name::new("startup-screen");
         let author_name = Name::new("author-name");
