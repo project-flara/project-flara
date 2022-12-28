@@ -1,8 +1,8 @@
 //! Main screen
 //!
-use bevy::prelude::*;
-
 use crate::{state::AppState, state::StoryState, StatePlugin};
+use bevy::prelude::*;
+use bevy_rapier2d::prelude::*;
 pub struct MainScreenPlugin;
 
 impl Plugin for MainScreenPlugin {
@@ -16,17 +16,21 @@ impl Plugin for MainScreenPlugin {
         );
 
         app.add_system_set(
-            SystemSet::on_update(Self::STATE).with_system(Self::on_update),
+            SystemSet::on_update(Self::STATE)
+                .with_system(Self::on_update)
+                .with_system(Self::player_movement),
         );
     }
 }
-
+#[derive(Component)]
+pub struct Player(f32);
 impl MainScreenPlugin {
     pub fn on_update(
-        query: Query<(&Name, &Interaction)>,
+        buttons: Query<(&Name, &Interaction)>,
+
         mut state: ResMut<State<AppState>>,
     ) {
-        let interaction = query
+        let interaction = buttons
             .iter()
             .find(|(name, _)| name.as_str() == "story-button")
             .unwrap()
@@ -37,7 +41,13 @@ impl MainScreenPlugin {
         }
     }
 
-    pub fn on_enter(mut commands: Commands, server: Res<AssetServer>) {
+    pub fn on_enter(
+        mut commands: Commands,
+        server: Res<AssetServer>,
+        mut rapier_config: ResMut<RapierConfiguration>,
+    ) {
+        // Set gravity to 0.0 and spawn camera.
+        rapier_config.gravity = Vec2::ZERO;
         let font = server.load("NotoSans-Regular.ttf");
         commands
             .spawn((
@@ -72,6 +82,24 @@ impl MainScreenPlugin {
                     ..default()
                 });
             });
+
+        let sprite_size = 100.0;
+
+        // Spawn entity with `Player` struct as a component for access in movement query.
+        commands.spawn((
+            SpriteBundle {
+                sprite: Sprite {
+                    color: Color::rgb(0.0, 0.0, 0.0),
+                    custom_size: Some(Vec2::new(sprite_size, sprite_size)),
+                    ..Default::default()
+                },
+                ..Default::default()
+            },
+            RigidBody::Dynamic,
+            Velocity::zero(),
+            Collider::ball(sprite_size / 2.0),
+            Player(100.0),
+        ));
     }
 
     pub fn on_exit(query: Query<(Entity, &Name)>, mut commands: Commands) {
@@ -81,6 +109,31 @@ impl MainScreenPlugin {
             .unwrap()
             .0;
         commands.entity(entity).despawn_recursive();
+    }
+
+    pub fn player_movement(
+        keyboard_input: Res<Input<KeyCode>>,
+        mut player_info: Query<(&Player, &mut Velocity)>,
+    ) {
+        for (player, mut rb_vels) in &mut player_info {
+            let up = keyboard_input.any_pressed([KeyCode::W, KeyCode::Up]);
+            let down = keyboard_input.any_pressed([KeyCode::S, KeyCode::Down]);
+            let left = keyboard_input.any_pressed([KeyCode::A, KeyCode::Left]);
+            let right =
+                keyboard_input.any_pressed([KeyCode::D, KeyCode::Right]);
+
+            let x_axis = -(left as i8) + right as i8;
+            let y_axis = -(down as i8) + up as i8;
+
+            let mut move_delta = Vec2::new(x_axis as f32, y_axis as f32);
+            if move_delta != Vec2::ZERO {
+                move_delta /= move_delta.length();
+            }
+
+            // Update the velocity on the rigid_body_component,
+            // the bevy_rapier plugin will update the Sprite transform.
+            rb_vels.linvel = move_delta * player.0;
+        }
     }
 }
 
