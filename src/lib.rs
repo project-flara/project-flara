@@ -10,6 +10,7 @@ pub mod story;
 use bevy::{prelude::*, window::WindowMode};
 use bevy_inspector_egui::WorldInspectorPlugin;
 
+use invisible_to_focus::InvisibleToFocusPlugin;
 use main_screen::MainScreenPlugin;
 use startup::{startup_screen::StartupPlugin, title::TitlePlugin};
 use story::{
