@@ -17,10 +17,10 @@ impl CustomCursor {
         mut commands: Commands,
         server: Res<AssetServer>,
     ) {
-          for window in windows.iter_mut() {
-                   window.set_cursor_visibility(false);
-               }
-        
+        for window in windows.iter_mut() {
+            window.set_cursor_visibility(false);
+        }
+
         commands.spawn((
             ImageBundle {
                 style: Style {
@@ -45,7 +45,7 @@ impl CustomCursor {
         // query to get camera transform
         q_camera: Query<(&Camera, &GlobalTransform), With<MainCamera>>,
         mut cursor: Query<
-            &mut Style,
+            (&mut Style, &mut Visibility),
             (With<Cursor>, Without<Camera>, Without<MainCamera>),
         >,
     ) {
@@ -59,13 +59,17 @@ impl CustomCursor {
         } else {
             wnds.get_primary().unwrap()
         };
+        let (mut cursor, mut visibility) = cursor.single_mut();
 
         // check if the cursor is inside the window and get its position
         if let Some(screen_pos) = wnd.cursor_position() {
-            let mut cursor = cursor.single_mut();
-            
             cursor.position.left = Val::Px(screen_pos.x);
             cursor.position.top = Val::Px(wnd.height() - screen_pos.y);
+            *visibility = Visibility::VISIBLE;
+        } else {
+            cursor.position.left = Val::Px(-100.);
+            cursor.position.top = Val::Px(-100.);
+            *visibility = Visibility::INVISIBLE;
         }
     }
 }
