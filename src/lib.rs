@@ -6,6 +6,8 @@ use bevy_rapier2d::prelude::*;
 use cursor::{CustomCursor, MainCamera};
 pub use framework::states as state;
 pub mod cursor;
+pub mod map;
+pub mod rhythm;
 pub mod story;
 use bevy::{prelude::*, window::WindowMode};
 use bevy_inspector_egui::WorldInspectorPlugin;
