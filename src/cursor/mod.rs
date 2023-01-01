@@ -31,6 +31,7 @@ impl CustomCursor {
                 },
 
                 image: UiImage(server.load("app/cursor.png")),
+                z_index: ZIndex::Global(15),
                 ..default()
             },
             Cursor,
