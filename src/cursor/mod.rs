@@ -1,6 +1,8 @@
 use bevy::{
     prelude::*, render::camera::RenderTarget, transform::TransformSystem,
 };
+
+use crate::invisible_to_focus::InvisibleToFocus;
 pub struct CustomCursor;
 
 impl Plugin for CustomCursor {
@@ -32,6 +34,7 @@ impl CustomCursor {
                 ..default()
             },
             Cursor,
+            InvisibleToFocus,
         ));
     }
 

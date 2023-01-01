@@ -1,4 +1,5 @@
 #![doc = include_str!("./README.md")]
+pub mod invisible_to_focus;
 pub mod main_screen;
 pub mod startup;
 use bevy_rapier2d::prelude::*;
@@ -40,6 +41,7 @@ pub fn app(fullscreen: bool) -> App {
     .add_startup_system(camera)
     // add the app state type
     .add_state(state::AppState::StartupScreen)
+    .add_plugin(InvisibleToFocusPlugin)
     .add_plugin(CustomCursor)
     .add_plugin(StartupPlugin)
     .add_plugin(TitlePlugin)
