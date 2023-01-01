@@ -83,6 +83,38 @@ impl MainScreenPlugin {
                 });
             });
 
+        commands
+            .spawn((
+                ButtonBundle {
+                    style: Style {
+                        position_type: PositionType::Absolute,
+                        position: UiRect {
+                            left: Val::Percent(40.0),
+                            right: Val::Percent(40.0),
+                            top: Val::Auto,
+                            bottom: Val::Px(0.0),
+                        },
+                        size: Size::new(Val::Percent(19.0), Val::Auto),
+                        padding: UiRect::all(Val::Px(15.0)),
+                        ..default()
+                    },
+                    ..default()
+                },
+                BottomCenterMenu,
+            ))
+            .with_children(|parent| {
+                parent.spawn(TextBundle {
+                    text: Text::from_section(
+                        "View Map",
+                        TextStyle {
+                            font: font.clone(),
+                            font_size: 24.0,
+                            color: Color::PINK,
+                        },
+                    ),
+                    ..default()
+                });
+            });
         let sprite_size = 100.0;
 
         // Spawn entity with `Player` struct as a component for access in movement query.
@@ -102,7 +134,14 @@ impl MainScreenPlugin {
         ));
     }
 
-    pub fn on_exit(query: Query<(Entity, &Name)>, mut commands: Commands) {
+    pub fn on_exit(
+        query: Query<(Entity, &Name)>,
+        bottom_center_menu: Query<Entity, With<BottomCenterMenu>>,
+        mut commands: Commands,
+    ) {
+        commands
+            .entity(bottom_center_menu.single())
+            .despawn_recursive();
         let entity = query
             .iter()
             .find(|(_, name)| name.as_str() == "story-button")
@@ -140,3 +179,6 @@ impl MainScreenPlugin {
 impl StatePlugin for MainScreenPlugin {
     const STATE: AppState = AppState::MainScreen;
 }
+
+#[derive(Component)]
+pub struct BottomCenterMenu;
