@@ -1,7 +1,11 @@
 #![doc = include_str!("./README.md")]
+use iyes_loopless::prelude::*;
+
+pub mod back_button;
 pub mod invisible_to_focus;
 pub mod main_screen;
 pub mod startup;
+use back_button::BackButtonPlugin;
 use bevy_rapier2d::prelude::*;
 use cursor::{CustomCursor, MainCamera};
 pub use framework::states as state;
@@ -43,12 +47,14 @@ pub fn app(fullscreen: bool) -> App {
     }))
     .add_startup_system(camera)
     // add the app state type
-    .add_state(state::AppState::StartupScreen)
+    .add_loopless_state(state::AppState::MainScreen)
     .add_plugin(InvisibleToFocusPlugin)
+    .add_plugin(BackButtonPlugin)
     .add_plugin(CustomCursor)
     .add_plugin(StartupPlugin)
     .add_plugin(TitlePlugin)
     .add_plugin(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0))
+    .add_plugin(RapierDebugRenderPlugin::default())
     .add_plugin(MainScreenPlugin)
     .add_plugin(StoryMenuPlugin)
     .add_plugin(MainStoryMenu)

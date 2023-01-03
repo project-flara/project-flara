@@ -1,8 +1,8 @@
-//! This section is where a menu is 
-//! 
-
+//! This section is where a menu is
+//!
 
 use bevy::prelude::*;
+use iyes_loopless::prelude::*;
 
 use crate::{
     state::{AppState, StoryState},
@@ -14,16 +14,14 @@ pub struct StoryMenuPlugin;
 impl Plugin for StoryMenuPlugin {
     fn build(&self, app: &mut App) {
         // systems to run only in the startup screen
-        app.add_system_set(
-            SystemSet::on_enter(Self::STATE).with_system(Self::on_enter),
-        );
+        app.add_enter_system(Self::STATE, Self::on_enter);
 
+        app.add_exit_system(Self::STATE, Self::on_exit);
         app.add_system_set(
-            SystemSet::on_exit(Self::STATE).with_system(Self::on_exit),
-        );
-
-        app.add_system_set(
-            SystemSet::on_update(Self::STATE).with_system(Self::on_update),
+            ConditionSet::new()
+                .run_in_state(Self::STATE)
+                .with_system(Self::on_update)
+                .into(),
         );
     }
 }
@@ -88,7 +86,8 @@ impl StoryMenuPlugin {
 
     pub fn on_update(
         query: Query<(&Interaction, &Name)>,
-        mut state: ResMut<State<AppState>>,
+
+        mut commands: Commands,
     ) {
         let interaction = query
             .iter()
@@ -97,7 +96,9 @@ impl StoryMenuPlugin {
             .0;
 
         if *interaction == Interaction::Clicked {
-            state.set(AppState::Story(StoryState::MainStory)).unwrap();
+            commands.insert_resource(NextState(AppState::Story(
+                StoryState::MainStory,
+            )));
         }
     }
 

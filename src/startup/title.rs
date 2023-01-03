@@ -1,13 +1,15 @@
 //! Title screen where a button will say "PRESS TO CONTINUE"
 //!
 use bevy::prelude::*;
+use iyes_loopless::prelude::*;
 
 use crate::{state::AppState, StatePlugin};
 
 impl TitlePlugin {
     pub fn on_update(
         mut query: Query<(&Interaction, &Name)>,
-        mut app_state: ResMut<State<AppState>>,
+
+        mut commands: Commands,
     ) {
         let (interaction, _) = query
             .iter_mut()
@@ -15,7 +17,7 @@ impl TitlePlugin {
             .unwrap();
 
         if *interaction == Interaction::Clicked {
-            app_state.set(AppState::MainScreen).unwrap();
+            commands.insert_resource(NextState(AppState::MainScreen));
         }
     }
     pub fn on_enter(mut commands: Commands, server: Res<AssetServer>) {
@@ -91,16 +93,14 @@ pub struct TitlePlugin;
 
 impl Plugin for TitlePlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(
-            SystemSet::on_enter(Self::STATE).with_system(Self::on_enter),
-        );
+        app.add_enter_system(Self::STATE, Self::on_enter);
 
+        app.add_exit_system(Self::STATE, Self::on_exit);
         app.add_system_set(
-            SystemSet::on_exit(Self::STATE).with_system(Self::on_exit),
-        );
-
-        app.add_system_set(
-            SystemSet::on_update(Self::STATE).with_system(Self::on_update),
+            ConditionSet::new()
+                .run_in_state(Self::STATE)
+                .with_system(Self::on_update)
+                .into(),
         );
     }
 }

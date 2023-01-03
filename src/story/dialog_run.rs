@@ -1,11 +1,11 @@
 /// Code that runs the system exported by [framework::Story::run()]
-
 use crate::{
     state::{AppState, StoryState},
     StatePlugin,
 };
 use bevy::prelude::*;
 use bevy_rpg::ActiveState;
+use iyes_loopless::prelude::*;
 
 use super::chapter_menu::CurrentChapterState;
 
@@ -22,18 +22,14 @@ impl DialogRunPlugin {
             .unwrap();
 
         chapter.run().run((), world);
-        let mut active_state: Mut<State<ActiveState>> =
-            world.get_resource_mut().unwrap();
 
-        active_state.set(ActiveState::Active).unwrap();
+        world.insert_resource(NextState(ActiveState::Active));
     }
 }
 
 impl Plugin for DialogRunPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(
-            SystemSet::on_enter(Self::STATE).with_system(Self::on_enter),
-        );
+        app.add_enter_system(Self::STATE, Self::on_enter);
     }
 }
 

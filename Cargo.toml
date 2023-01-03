@@ -48,3 +48,5 @@ flarastory-boutique = { version = "0.1.0", path = "story/mainline/boutique" }
 flarastory-cafe = { version = "0.1.0", path = "story/mainline/cafe" }
 bevy_rpg = { version = "0.1.0", path = "../bevy-rpg" }
 bevy_rapier2d = { version = "0.19.0", features = ["simd-stable"]}
+smooth-bevy-cameras = "0.6.0"
+iyes_loopless = "0.9.1"

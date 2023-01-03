@@ -3,22 +3,21 @@
 use crate::{state::AppState, state::StoryState, StatePlugin};
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
+use iyes_loopless::prelude::*;
 pub struct MainScreenPlugin;
 
 impl Plugin for MainScreenPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(
-            SystemSet::on_enter(Self::STATE).with_system(Self::on_enter),
-        );
+        app.add_enter_system(Self::STATE, Self::on_enter);
+
+        app.add_exit_system(Self::STATE, Self::on_exit);
 
         app.add_system_set(
-            SystemSet::on_exit(Self::STATE).with_system(Self::on_exit),
-        );
-
-        app.add_system_set(
-            SystemSet::on_update(Self::STATE)
+            ConditionSet::new()
+                .run_in_state(Self::STATE)
                 .with_system(Self::on_update)
-                .with_system(Self::player_movement),
+                .with_system(Self::player_movement)
+                .into(),
         );
     }
 }
@@ -27,8 +26,7 @@ pub struct Player(f32);
 impl MainScreenPlugin {
     pub fn on_update(
         buttons: Query<(&Name, &Interaction)>,
-
-        mut state: ResMut<State<AppState>>,
+        mut commands: Commands,
     ) {
         let interaction = buttons
             .iter()
@@ -37,7 +35,8 @@ impl MainScreenPlugin {
             .1;
 
         if *interaction == Interaction::Clicked {
-            state.set(AppState::Story(StoryState::Menu)).unwrap();
+            commands
+                .insert_resource(NextState(AppState::Story(StoryState::Menu)));
         }
     }
 
@@ -45,6 +44,7 @@ impl MainScreenPlugin {
         mut commands: Commands,
         server: Res<AssetServer>,
         mut rapier_config: ResMut<RapierConfiguration>,
+        windows: Res<Windows>,
     ) {
         // Set gravity to 0.0 and spawn camera.
         rapier_config.gravity = Vec2::ZERO;
@@ -122,22 +122,54 @@ impl MainScreenPlugin {
             SpriteBundle {
                 sprite: Sprite {
                     color: Color::rgb(0.0, 0.0, 0.0),
-                    custom_size: Some(Vec2::new(sprite_size, sprite_size)),
+                    custom_size: Some(Vec2::new(50., 100.)),
                     ..Default::default()
                 },
                 ..Default::default()
             },
             RigidBody::Dynamic,
             Velocity::zero(),
-            Collider::ball(sprite_size / 2.0),
+            Collider::cuboid(25., 50.),
             Player(100.0),
+            PlayerChar,
+            LockedAxes::ROTATION_LOCKED,
         ));
+        let window = windows.get_primary().unwrap();
+
+        commands.spawn((
+            Collider::cuboid(
+                window.requested_width() / 1.5,
+                window.requested_height() / 4.,
+            ),
+            TransformBundle::from(Transform::from_xyz(
+                0.,
+                window.requested_height() / 4.,
+                0.,
+            )),
+        ));
+
+        commands.spawn(NodeBundle {
+            style: Style {
+                position_type: PositionType::Absolute,
+                position: UiRect {
+                    bottom: Val::Px(0.),
+                    left: Val::Px(0.),
+                    right: Val::Px(0.),
+                    top: Val::Percent(60.),
+                },
+                size: Size::new(Val::Percent(100.), Val::Percent(40.)),
+                ..default()
+            },
+            ..default()
+        });
     }
 
     pub fn on_exit(
         query: Query<(Entity, &Name)>,
+        player_char: Query<Entity, With<PlayerChar>>,
         bottom_center_menu: Query<Entity, With<BottomCenterMenu>>,
         mut commands: Commands,
+        camera: Query<&mut Transform, (With<Camera2d>)>,
     ) {
         commands
             .entity(bottom_center_menu.single())
@@ -148,6 +180,7 @@ impl MainScreenPlugin {
             .unwrap()
             .0;
         commands.entity(entity).despawn_recursive();
+        commands.entity(player_char.single()).despawn_recursive();
     }
 
     pub fn player_movement(
@@ -169,9 +202,10 @@ impl MainScreenPlugin {
                 move_delta /= move_delta.length();
             }
 
+            let speed = 2.5;
             // Update the velocity on the rigid_body_component,
             // the bevy_rapier plugin will update the Sprite transform.
-            rb_vels.linvel = move_delta * player.0;
+            rb_vels.linvel = move_delta * player.0 * speed;
         }
     }
 }
@@ -182,3 +216,6 @@ impl StatePlugin for MainScreenPlugin {
 
 #[derive(Component)]
 pub struct BottomCenterMenu;
+
+#[derive(Component)]
+pub struct PlayerChar;

@@ -1,5 +1,6 @@
-use bevy::{ecs::system::SystemState, prelude::*};
-use bevy_rpg::ActiveState;
+use bevy::prelude::*;
+use iyes_loopless::prelude::*;
+
 use framework::Chapter;
 
 use crate::state::AppState;
@@ -8,34 +9,31 @@ use crate::StatePlugin;
 use crate::state::StoryState;
 
 use super::dialog_run::{CurrentDialog, DialogRunPlugin};
-use super::story_loading::stories::Stories;
 
 pub struct ChapterMenuPlugin;
 
 impl Plugin for ChapterMenuPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(
-            SystemSet::on_enter(Self::STATE).with_system(Self::on_enter),
-        );
+        app.add_enter_system(Self::STATE, Self::on_enter);
 
         app.add_system_set(
-            SystemSet::on_update(Self::STATE).with_system(Self::on_update),
+            ConditionSet::new()
+                .run_in_state(Self::STATE)
+                .with_system(Self::on_update)
+                .into(),
         );
-
-        app.add_system_set(
-            SystemSet::on_exit(Self::STATE).with_system(Self::on_exit),
-        );
+        app.add_exit_system(Self::STATE, Self::on_exit);
     }
 }
 
 impl ChapterMenuPlugin {
     pub fn on_enter(
-        app_state: Res<State<AppState>>,
+        app_state: Res<CurrentState<AppState>>,
         server: Res<AssetServer>,
         current: Res<CurrentChapterState>,
         mut commands: Commands,
     ) {
-        if AppState::Story(StoryState::ChapterMenu) == *app_state.current() {
+        if AppState::Story(StoryState::ChapterMenu) == app_state.0 {
             let font = server.load("NotoSans-Regular.ttf");
             let about = server.load("app/icons/info-symbolic.png");
             commands
@@ -101,7 +99,6 @@ impl ChapterMenuPlugin {
     pub fn on_update(
         query: Query<(&Interaction, &Name)>,
         mut commands: Commands,
-        mut state: ResMut<State<AppState>>,
     ) {
         if let Some((_, name)) = query.iter().find(|(interaction, name)| {
             **interaction == Interaction::Clicked
@@ -115,7 +112,7 @@ impl ChapterMenuPlugin {
                     .to_string(),
             });
 
-            state.set(DialogRunPlugin::STATE).unwrap();
+            commands.insert_resource(NextState(DialogRunPlugin::STATE));
         }
     }
 }

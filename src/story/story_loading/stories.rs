@@ -4,6 +4,7 @@ use std::hash::Hash;
 
 use bevy::prelude::*;
 use dlopen::wrapper::Container;
+use iyes_loopless::prelude::*;
 
 use super::dylib::StoryDylib;
 use super::dylib::{load, MainStoryPluginAPI};

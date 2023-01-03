@@ -3,6 +3,7 @@
 
 use bevy::prelude::*;
 use bevy_inspector_egui::Inspectable;
+use iyes_loopless::prelude::*;
 
 use crate::{state::AppState, StatePlugin};
 #[derive(Component, Inspectable)]
@@ -100,8 +101,8 @@ impl StartupPlugin {
     }
     pub fn on_update(
         mut query: Query<(&Interaction, &Name, &mut StartupTimer)>,
-        mut app_state: ResMut<State<AppState>>,
         time: Res<Time>,
+        mut commands: Commands,
     ) {
         let (interaction, _, mut timer) = query
             .iter_mut()
@@ -111,7 +112,7 @@ impl StartupPlugin {
         if !timer.finished() && !(*interaction == Interaction::Clicked) {
             timer.tick(time.delta());
         } else {
-            app_state.set(AppState::TitleScreen).unwrap()
+            commands.insert_resource(NextState(AppState::TitleScreen));
         }
     }
     pub fn on_exit(query: Query<(Entity, &Name)>, mut commands: Commands) {
@@ -129,16 +130,14 @@ impl Plugin for StartupPlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<StartupTimer>();
         // systems to run only in the startup screen
-        app.add_system_set(
-            SystemSet::on_enter(Self::STATE).with_system(Self::on_enter),
-        );
+        app.add_enter_system(Self::STATE, Self::on_enter);
 
+        app.add_exit_system(Self::STATE, Self::on_exit);
         app.add_system_set(
-            SystemSet::on_exit(Self::STATE).with_system(Self::on_exit),
-        );
-
-        app.add_system_set(
-            SystemSet::on_update(Self::STATE).with_system(Self::on_update),
+            ConditionSet::new()
+                .run_in_state(Self::STATE)
+                .with_system(Self::on_update)
+                .into(),
         );
     }
 }

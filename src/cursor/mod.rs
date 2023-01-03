@@ -1,6 +1,4 @@
-use bevy::{
-    prelude::*, render::camera::RenderTarget, transform::TransformSystem,
-};
+use bevy::{prelude::*, render::camera::RenderTarget};
 
 use crate::invisible_to_focus::InvisibleToFocus;
 pub struct CustomCursor;
@@ -51,7 +49,7 @@ impl CustomCursor {
     ) {
         // get the camera info and transform
         // assuming there is exactly one main camera entity, so query::single() is OK
-        let (camera, camera_transform) = q_camera.single();
+        let (camera, _camera_transform) = q_camera.single();
 
         // get the window that the camera is displaying to (or the primary window)
         let wnd = if let RenderTarget::Window(id) = camera.target {

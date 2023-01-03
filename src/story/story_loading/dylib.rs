@@ -1,4 +1,3 @@
-
 use dlopen::wrapper::Container;
 use dlopen::wrapper::WrapperApi;
 use dlopen_derive::WrapperApi;

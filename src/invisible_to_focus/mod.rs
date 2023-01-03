@@ -27,10 +27,9 @@ impl InvisibleToFocusPlugin {
             (&mut ComputedVisibility, Entity),
             With<InvisibleToFocus>,
         >,
-     
+
         mut map: ResMut<Map>,
     ) {
-    
         for (mut visibility, entity) in visibilities.iter_mut() {
             map.insert(entity, visibility.clone());
             *visibility = ComputedVisibility::INVISIBLE;

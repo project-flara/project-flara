@@ -1,8 +1,9 @@
 use bevy::prelude::*;
 use framework::states::MainStory;
+use iyes_loopless::prelude::*;
 
 use crate::{
-    state::{AppState, Story, StoryState},
+    state::{AppState, StoryState},
     StatePlugin,
 };
 
@@ -14,17 +15,10 @@ pub struct MainStoryMenu;
 impl Plugin for MainStoryMenu {
     fn build(&self, app: &mut App) {
         app.init_resource::<Stories>();
-        app.add_system_set(
-            SystemSet::on_enter(Self::STATE).with_system(Self::on_enter),
-        );
+        app.add_enter_system(Self::STATE, Self::on_enter);
 
-        app.add_system_set(
-            SystemSet::on_exit(Self::STATE).with_system(Self::on_update),
-        );
-
-        app.add_system_set(
-            SystemSet::on_exit(Self::STATE).with_system(Self::on_exit),
-        );
+        app.add_exit_system(Self::STATE, Self::on_exit);
+        app.add_exit_system(Self::STATE, Self::on_exit);
     }
 }
 
@@ -67,7 +61,7 @@ impl MainStoryMenu {
     ) {
         let font = server.load("NotoSans-Regular.ttf");
         commands
-            .spawn(NodeBundle { ..default() })
+            .spawn((NodeBundle { ..default() }, MainStoryScreen))
             .with_children(|parent| {
                 if !stories.mainline.loaded {
                     stories.load_mainline()
@@ -96,12 +90,14 @@ impl MainStoryMenu {
     pub fn on_update(
         query: Query<(&Interaction, &MainStory)>,
         mut commands: Commands,
-        mut state: ResMut<State<AppState>>,
+
         stories: Res<Stories>,
     ) {
         for (interaction, name) in query.iter() {
             if *interaction == Interaction::Clicked {
-                state.set(AppState::Story(StoryState::ChapterMenu)).unwrap();
+                commands.insert_resource(NextState(AppState::Story(
+                    StoryState::ChapterMenu,
+                )));
                 commands.insert_resource(CurrentChapterState {
                     chapter: stories
                         .mainline
@@ -114,16 +110,11 @@ impl MainStoryMenu {
             };
         }
     }
-    pub fn on_exit(query: Query<(Entity, &Name)>, mut commands: Commands) {
-        commands
-            .entity(
-                query
-                    .iter()
-                    .find(|(_, name)| name.as_str() == "title-screen")
-                    .unwrap()
-                    .0,
-            )
-            .despawn_recursive();
+    pub fn on_exit(
+        query: Query<Entity, With<MainStoryScreen>>,
+        mut commands: Commands,
+    ) {
+        commands.entity(query.single()).despawn_recursive();
     }
 }
 
@@ -131,3 +122,6 @@ impl StatePlugin for MainStoryMenu {
     const STATE: crate::state::AppState =
         AppState::Story(StoryState::MainStory);
 }
+
+#[derive(Component)]
+pub struct MainStoryScreen;
