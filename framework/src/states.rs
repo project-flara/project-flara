@@ -1,9 +1,8 @@
 use bevy::prelude::*;
-
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub enum AppState {
     StartupScreen,
-    Dialog,
+
     MainScreen,
     TitleScreen,
     Story(StoryState),
